@@ -45,7 +45,7 @@ public class TimedInputCommandExecutor implements Runnable {
                     // We got the lock! Execute the command, and schedule its stopping counterpart
                     target.setValue(value);
 
-                    TimedInputCommand resetCommand = new TimedInputCommand(target, target.defaultValue(), currentTime + command.duration, 0, false);
+                    TimedInputCommand resetCommand = new TimedInputCommand(target, target.defaultValue(), currentTime - startTime + command.duration, 0, false);
                     commands.add(resetCommand);
                 }
             } else {

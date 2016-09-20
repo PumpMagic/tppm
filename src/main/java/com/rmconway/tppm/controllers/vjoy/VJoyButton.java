@@ -22,5 +22,6 @@ public class VJoyButton implements Button {
 
     public void setValue(double value) {
         // Call vJoy FFI
+        System.out.println(this.name + " -> " + String.valueOf(value) + " @ " + String.valueOf(System.nanoTime()));
     }
 }

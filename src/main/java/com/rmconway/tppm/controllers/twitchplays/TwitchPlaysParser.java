@@ -16,19 +16,17 @@ import java.util.regex.Pattern;
 public class TwitchPlaysParser {
     private static String numberGroupName = "number";
     private static String unitGroupName = "unit";
-    private static Pattern durationPattern = Pattern.compile("(?<"+numberGroupName+">\\d+)(?<"+unitGroupName+">ms|s|f)");
+    private static Pattern durationPattern = Pattern.compile("(?<"+numberGroupName+">-?\\d+)(?<"+unitGroupName+">ms|s|f)");
 
     private static final double BUTTON_PRESS_VALUE = 1.0;
 
     private HasInputs controller;
-    private final long nanosecondsPerFrame;
-    private Map<Input, Long> defaultDurations;
+    private InputProfile inputProfile;
 
 
-    public TwitchPlaysParser(HasInputs controller, long nanosecondsPerFrame, Map<Input, Long> defaultDurations) {
+    public TwitchPlaysParser(HasInputs controller, InputProfile inputProfile) {
         this.controller = controller;
-        this.nanosecondsPerFrame = nanosecondsPerFrame;
-        this.defaultDurations = defaultDurations;
+        this.inputProfile = inputProfile;
     }
 
     private static String[] tokenize(String text) {
@@ -53,7 +51,7 @@ public class TwitchPlaysParser {
                         duration = TimeUnit.SECONDS.toNanos(number);
                         break;
                     case "f":
-                        duration = number*nanosecondsPerFrame;
+                        duration = number*inputProfile.nanosecondsPerFrame();
                         break;
                     default:
                         // Should never happen unless our duration pattern is not as we expect
@@ -91,20 +89,24 @@ public class TwitchPlaysParser {
         String[] tokens = tokenize(text);
 
         int tokenBeingProcessed = 0;
-        long offset = 0;
+        long nextOffset = 0;
         PriorityQueue<TimedInputCommand> commands = new PriorityQueue<>(TimedInputCommand.comparator);
 
         // Iterate over starter tokens
         // Valid "starter" tokens are input identifiers (button names) and delays (durations enclosed in parentheses)
         // Inputs can have a "modifier" duration token
+        boolean lastTokenWasDelay = true;
+        TimedInputCommand lastCommand = null;
+
         while (tokenBeingProcessed < tokens.length) {
             String token = tokens[tokenBeingProcessed];
 
             // Try parsing the token as a delay
             Optional<Long> asDelay = parseAsDelay(token);
             if (asDelay.isPresent()) {
-                offset += asDelay.get();
+                nextOffset += asDelay.get();
                 tokenBeingProcessed += 1;
+                lastTokenWasDelay = true;
                 continue;
             }
 
@@ -113,8 +115,27 @@ public class TwitchPlaysParser {
             if (asInput.isPresent()) {
                 // Got an input token! Start making the input command
                 Input input = asInput.get();
-                TimedInputCommand command = new TimedInputCommand(input, BUTTON_PRESS_VALUE, offset, defaultDurations.get(input), true);
 
+                // If no delay was specified for after the last input, infer it using the input profile
+                if (!lastTokenWasDelay) {
+                    long recommendedDelay = inputProfile.suggestedDelay(lastCommand.target, input);
+                    if (recommendedDelay < 0) {
+                        if (lastCommand.duration > Math.abs(recommendedDelay)) {
+                            nextOffset += recommendedDelay;
+                        } else {
+                            // Our next command would go before the last one... probably not intended by user
+                            nextOffset += lastCommand.duration;
+                        }
+                    } else {
+                        nextOffset += recommendedDelay;
+                    }
+                }
+
+                TimedInputCommand command = new TimedInputCommand(input,
+                        BUTTON_PRESS_VALUE,
+                        nextOffset,
+                        inputProfile.defaultInputDurations.get(input),
+                        true);
 
                 // Act on a subsequent duration token, if present, by specifying a manual duration
                 int tokensProcessed = 1;
@@ -128,9 +149,10 @@ public class TwitchPlaysParser {
 
                 commands.add(command);
 
-                //@todo ugly lookahead / lookbehind for what offset to add
-                offset += command.duration;
                 tokenBeingProcessed += tokensProcessed;
+                lastTokenWasDelay = false;
+                lastCommand = command;
+                nextOffset += command.duration;
                 continue;
             }
         }

@@ -2,6 +2,7 @@ package com.rmconway.tppm.controllers.twitchplays;
 
 import com.rmconway.tppm.controllers.inputs.Input;
 import com.rmconway.tppm.controllers.models.SNESController;
+import com.rmconway.tppm.controllers.twitchplays.games.InputProfiles;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -21,19 +22,20 @@ public class TwitchPlaysParserTests {
         int DEFAULT_INPUT_DURATION_FRAMES =  15;
         long NANOSECONDS_PER_FRAME = 33333333;
 
-        SNESController controller = SNESController.build(0).get();
-        Map<Input, Long> defaultDurations = new HashMap<>(controller.getInputs().size());
-        for (Input i : controller.getInputs()) {
-            defaultDurations.put(i, DEFAULT_INPUT_DURATION_FRAMES*NANOSECONDS_PER_FRAME);
-        }
-        TwitchPlaysParser parser = new TwitchPlaysParser(controller, NANOSECONDS_PER_FRAME, defaultDurations);
+        SNESController snesController = SNESController.build(0).get();
+        InputProfile inputProfile = InputProfiles.SuperMarioRPG(snesController);
 
-        Optional<PriorityQueue<TimedInputCommand>> command;
-        command = parser.parse("a");
-        command = parser.parse("a 5s");
-        command = parser.parse("a 5ms");
-        command = parser.parse("a 1f");
-        command = parser.parse("a 4s (9s) a 3f a");
+        TwitchPlaysParser parser = new TwitchPlaysParser(snesController, inputProfile);
+
+        Optional<PriorityQueue<TimedInputCommand>> commandChain;
+        commandChain = parser.parse("a");
+        commandChain = parser.parse("a 5s");
+        commandChain = parser.parse("a 5ms");
+        commandChain = parser.parse("a 1f");
+        commandChain = parser.parse("a 4s (9s) a 3f a");
+        commandChain = parser.parse("a 5s (-1f) b");
+        commandChain = parser.parse("up a");
+        commandChain = parser.parse("up (0s) a");
     }
 
 }
