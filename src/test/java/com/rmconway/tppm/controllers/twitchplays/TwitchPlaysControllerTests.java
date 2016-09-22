@@ -10,15 +10,12 @@ import org.junit.Test;
 public class TwitchPlaysControllerTests {
     @Test
     public void testController() throws Exception {
-        SNESController snesController = SNESController.build(0).get();
+        SNESController snesController = SNESController.build(1).get();
         InputProfile inputProfile = InputProfiles.SuperMarioRPG(snesController);
 
         TwitchPlaysController controller = new TwitchPlaysController(snesController, inputProfile);
 
-        controller.handleText("a b x y");
-        controller.handleText("up down left right");
-        controller.handleText("l r select start");
-
-        Thread.sleep(2000);
+        controller.handleText("a b x y l r up down left right select start");
+        Thread.sleep(10000);
     }
 }

@@ -1,6 +1,7 @@
 package com.rmconway.tppm.controllers.vjoy;
 
 import com.rmconway.tppm.controllers.inputs.Button;
+import com.rmconway.tppm.controllers.vjoy.ffi.VJoyFFI;
 
 /**
  * A VJoyButton is a button on a vJoy device.
@@ -8,9 +9,9 @@ import com.rmconway.tppm.controllers.inputs.Button;
 public class VJoyButton implements Button {
     private String name;
     private int vjoyDeviceID;
-    private int vjoyButtonID;
+    private byte vjoyButtonID;
 
-    public VJoyButton(String name, int vjoyDeviceID, int vjoyButtonID) {
+    public VJoyButton(String name, int vjoyDeviceID, byte vjoyButtonID) {
         this.name = name;
         this.vjoyDeviceID = vjoyDeviceID;
         this.vjoyButtonID = vjoyButtonID;
@@ -22,6 +23,8 @@ public class VJoyButton implements Button {
 
     public void setValue(double value) {
         // Call vJoy FFI
+        boolean valueBoolean = value == 0.0 ? false : true;
+        VJoyFFI.setButton(vjoyDeviceID, vjoyButtonID, valueBoolean);
         System.out.println(this.name + " -> " + String.valueOf(value) + " @ " + String.valueOf(System.nanoTime()));
     }
 }
