@@ -32,7 +32,6 @@ public class TwitchPlaysController implements TextOperated {
         this.backingController = backingController;
         this.inputGuards = inputGuards;
         this.parser = new TwitchPlaysParser(backingController, inputProfile);
-
     }
 
     public boolean handleText(String text) {

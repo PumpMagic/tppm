@@ -17,7 +17,7 @@ public class InputProfiles {
         int framesPerSecond = 60;
 
         long movementOptionToSameMovementOptionDelay = 66666666;
-        long movementOptionToOtherMovementOptionDelay = 0;
+        long movementOptionToOtherMovementOptionDelay = 66666666;
         long movementOptionToNonMovementOptionDelay = -33333333;
 
         long nonMovementOptionToSameNonMovementOptionDelay = 66666666;

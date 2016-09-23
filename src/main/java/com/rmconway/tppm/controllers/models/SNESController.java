@@ -37,22 +37,21 @@ public class SNESController implements VJoyDevice, HasInputs {
         // The device is good, and we have it!
         Set<VJoyButton> buttons = new HashSet<>();
 
-        buttons.add(new VJoyButton("a", vjoyDeviceID, (byte) 0x00));
-        buttons.add(new VJoyButton("b", vjoyDeviceID, (byte) 0x01));
-        buttons.add(new VJoyButton("x", vjoyDeviceID, (byte) 0x02));
-        buttons.add(new VJoyButton("y", vjoyDeviceID, (byte) 0x03));
-        buttons.add(new VJoyButton("l", vjoyDeviceID, (byte) 0x04));
-        buttons.add(new VJoyButton("r", vjoyDeviceID, (byte) 0x05));
-        buttons.add(new VJoyButton("up", vjoyDeviceID, (byte) 0x06));
-        buttons.add(new VJoyButton("down", vjoyDeviceID, (byte) 0x07));
-        buttons.add(new VJoyButton("left", vjoyDeviceID, (byte) 0x08));
-        buttons.add(new VJoyButton("right", vjoyDeviceID, (byte) 0x09));
+        // Buttons are declared here in snes9x configuration order for ease of viewing
+        buttons.add(new VJoyButton("up", vjoyDeviceID, (byte) 0x01));
+        buttons.add(new VJoyButton("left", vjoyDeviceID, (byte) 0x02));
+        buttons.add(new VJoyButton("down", vjoyDeviceID, (byte) 0x03));
+        buttons.add(new VJoyButton("right", vjoyDeviceID, (byte) 0x04));
+        buttons.add(new VJoyButton("b", vjoyDeviceID, (byte) 0x05));
+        buttons.add(new VJoyButton("a", vjoyDeviceID, (byte) 0x06));
+        buttons.add(new VJoyButton("y", vjoyDeviceID, (byte) 0x07));
+        buttons.add(new VJoyButton("x", vjoyDeviceID, (byte) 0x08));
+        buttons.add(new VJoyButton("start", vjoyDeviceID, (byte) 0x09));
         buttons.add(new VJoyButton("select", vjoyDeviceID, (byte) 0x0A));
-        buttons.add(new VJoyButton("start", vjoyDeviceID, (byte) 0x0B));
+        buttons.add(new VJoyButton("l", vjoyDeviceID, (byte) 0x0B));
+        buttons.add(new VJoyButton("r", vjoyDeviceID, (byte) 0x0C));
 
         return Optional.of(new SNESController(vjoyDeviceID, buttons));
-
-        //return Optional.empty();
     }
 
     private SNESController(int vjoyDeviceID, Set<VJoyButton> buttons) {

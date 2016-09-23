@@ -26,8 +26,11 @@ public class TimedInputCommandExecutor implements Runnable {
         while (!commands.isEmpty()) {
             TimedInputCommand command = commands.poll();
             long commandOffset = command.offset;
+            Input target = command.target;
+            double value = command.value;
+            Semaphore guard = this.inputGuards.get(target);
 
-            // Wait until it's time to execute the command
+            // Wait until it's time to execute the next command
             // We block rather than sleeping to achieve high precision
             // (Sleeping incurs the cost of context switching)
             long currentTime = System.nanoTime();
@@ -35,14 +38,11 @@ public class TimedInputCommandExecutor implements Runnable {
                 currentTime = System.nanoTime();
             }
 
-            Input target = command.target;
-            double value = command.value;
-            Semaphore guard = this.inputGuards.get(target);
-
             if (command.isStart) {
                 // We don't have the guard - try acquiring the lock first
                 if (guard.tryAcquire()) {
                     // We got the lock! Execute the command, and schedule its stopping counterpart
+                    currentTime = System.nanoTime();
                     target.setValue(value);
 
                     TimedInputCommand resetCommand = new TimedInputCommand(target, target.defaultValue(), currentTime - startTime + command.duration, 0, false);
@@ -52,7 +52,7 @@ public class TimedInputCommandExecutor implements Runnable {
                 // We have the guard, because this is a stop command and we're the ones who ran the complementing start
                 // command. Execute this command and unlock
                 target.setValue(value);
-                this.inputGuards.get(target).release();
+                guard.release();
             }
         }
     }

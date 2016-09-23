@@ -9,13 +9,15 @@ import java.io.IOException;
 /**
  * Created by owner on 9/15/16.
  */
-public class TPPMBot extends PircBot {
+public class TwitchPlaysBot extends PircBot {
     private String server;
     private int port;
     private String auth;
     private String listenChannel;
+    private MessageReceivedHandler messageReceivedHandler;
 
-    public TPPMBot(String server, int port, String username, String auth, String listenChannel) {
+
+    public TwitchPlaysBot(String server, int port, String username, String auth, String listenChannel, MessageReceivedHandler messageReceivedHandler) {
         this.setVerbose(true);
         this.setName(username);
         this.setLogin(username);
@@ -24,6 +26,7 @@ public class TPPMBot extends PircBot {
         this.port = port;
         this.auth = auth;
         this.listenChannel = listenChannel;
+        this.messageReceivedHandler = messageReceivedHandler;
     }
 
     public void start() {
@@ -58,6 +61,6 @@ public class TPPMBot extends PircBot {
 
     @Override
     protected void onMessage(String channel, String sender, String login, String hostname, String message) {
-        System.out.println("Got message from user " + sender + ": " + message);
+        this.messageReceivedHandler.messageReceived(sender, message);
     }
 }

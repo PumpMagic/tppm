@@ -22,7 +22,6 @@ public class VJoyButton implements Button {
     }
 
     public void setValue(double value) {
-        // Call vJoy FFI
         boolean valueBoolean = value == 0.0 ? false : true;
         VJoyFFI.setButton(vjoyDeviceID, vjoyButtonID, valueBoolean);
         System.out.println(this.name + " -> " + String.valueOf(value) + " @ " + String.valueOf(System.nanoTime()));

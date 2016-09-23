@@ -155,6 +155,8 @@ public class TwitchPlaysParser {
                 nextOffset += command.duration;
                 continue;
             }
+
+            return Optional.empty();
         }
 
         if (!commands.isEmpty()) {
