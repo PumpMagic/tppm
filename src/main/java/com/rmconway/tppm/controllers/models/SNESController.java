@@ -4,7 +4,7 @@ import com.rmconway.tppm.controllers.inputs.HasInputs;
 import com.rmconway.tppm.controllers.inputs.Input;
 import com.rmconway.tppm.controllers.vjoy.VJoyButton;
 import com.rmconway.tppm.controllers.vjoy.VJoyDevice;
-import com.rmconway.tppm.controllers.vjoy.ffi.VJoyFFI;
+import com.rmconway.tppm.controllers.vjoy.ffi.VJoyJNA;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -23,15 +23,15 @@ public class SNESController implements VJoyDevice, HasInputs {
         // On success, create the buttons and call the private constructor; return it
         // On failure, return empty
 
-        boolean vjoyEnabled = VJoyFFI.isVJoyEnabled();
+        boolean vjoyEnabled = VJoyJNA.isVJoyEnabled();
         if (!vjoyEnabled) { return Optional.empty(); }
-        boolean deviceExists = VJoyFFI.doesDeviceExist(vjoyDeviceID);
+        boolean deviceExists = VJoyJNA.doesDeviceExist(vjoyDeviceID);
         if (!deviceExists) { return Optional.empty(); }
-        int numButtons = VJoyFFI.getNumButtons(vjoyDeviceID);
+        int numButtons = VJoyJNA.getNumButtons(vjoyDeviceID);
         if (numButtons < NUM_SNES_CONTROLLER_BUTTONS) { return Optional.empty(); }
-        boolean deviceClaimedByUs = VJoyFFI.claimDevice(vjoyDeviceID);
+        boolean deviceClaimedByUs = VJoyJNA.claimDevice(vjoyDeviceID);
         if (!deviceClaimedByUs) { return Optional.empty(); }
-        boolean reset = VJoyFFI.resetDevice(vjoyDeviceID);
+        boolean reset = VJoyJNA.resetDevice(vjoyDeviceID);
         if (!reset) { return Optional.empty(); }
 
         // The device is good, and we have it!

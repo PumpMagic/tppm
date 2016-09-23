@@ -1,10 +1,8 @@
 package com.rmconway.tppm.controllers.vjoy;
 
-import com.rmconway.tppm.controllers.vjoy.ffi.VJoyFFI;
+import com.rmconway.tppm.controllers.vjoy.ffi.VJoyJNA;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.Test;
-
-import java.util.Optional;
 
 import static junit.framework.TestCase.fail;
 
@@ -16,11 +14,11 @@ public class VJoyFFITests {
     public void testSetButtonTiming() {
         int vjoyDeviceID = 1;
         int buttonsRequired = 1;
-        if (!VJoyFFI.isVJoyEnabled() ||
-                !VJoyFFI.doesDeviceExist(vjoyDeviceID) ||
-                VJoyFFI.getNumButtons(vjoyDeviceID) < buttonsRequired ||
-                !VJoyFFI.claimDevice(vjoyDeviceID) ||
-                !VJoyFFI.resetDevice(vjoyDeviceID)) {
+        if (!VJoyJNA.isVJoyEnabled() ||
+                !VJoyJNA.doesDeviceExist(vjoyDeviceID) ||
+                VJoyJNA.getNumButtons(vjoyDeviceID) < buttonsRequired ||
+                !VJoyJNA.claimDevice(vjoyDeviceID) ||
+                !VJoyJNA.resetDevice(vjoyDeviceID)) {
             fail();
         }
 
@@ -29,7 +27,7 @@ public class VJoyFFITests {
         for (int i = 0; i < 100; i++) {
             boolean nextVal = true;
             long startTime = System.nanoTime();
-            VJoyFFI.setButton(vjoyDeviceID, (byte) 0x01, nextVal);
+            VJoyJNA.setButton(vjoyDeviceID, (byte) 0x01, nextVal);
             long endTime = System.nanoTime();
             long timeTaken = endTime - startTime;
             timeStats.addValue(timeTaken);

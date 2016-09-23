@@ -14,7 +14,7 @@ public class Main {
 
         TwitchPlaysBot twitchPlaysBot = new TwitchPlaysBot("irc.twitch.tv", 6667,
                 "twitchplayspapermario",
-                "oauth:qnc4jo957a7csf18rmegif7bx2bnd2",
+                "oauth:whuupfqps26dugqhla1fntfuvzxwku",
                 "#twitchplayspapermario",
                 (sender, message) -> {
                     System.out.println("Got message from " + sender + ": " + message);

@@ -15,7 +15,7 @@ public class TwitchPlaysControllerTests {
         TwitchPlaysController controller = new TwitchPlaysController(snesController, inputProfile);
 
         //controller.handleText("a b x y l r up down left right select start");
-        controller.handleText("down up down up down up down up down up down up down up down up down up");
-        Thread.sleep(10000);
+        controller.handleText("a b");
+        Thread.sleep(1000);
     }
 }

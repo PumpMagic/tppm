@@ -8,7 +8,7 @@ import com.sun.jna.ptr.NativeLongByReference;
 /**
  * A vJoy FFI wrapped in a Java-friendly package. Only wraps a subset of vJoy functionality.
  */
-public class VJoyFFI {
+public class VJoyJNA {
     private interface VJoyNativeAPI extends Library {
         VJoyNativeAPI INSTANCE = (VJoyNativeAPI) Native.loadLibrary("vjoyinterface", VJoyNativeAPI.class);
 
