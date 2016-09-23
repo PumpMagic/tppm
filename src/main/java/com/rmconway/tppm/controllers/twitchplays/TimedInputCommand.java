@@ -17,10 +17,9 @@ public class TimedInputCommand {
     private static class TimedInputCommandComparator implements Comparator<TimedInputCommand> {
         @Override
         public int compare(TimedInputCommand c1, TimedInputCommand c2) {
-            if (c1.offset <= c2.offset) {
-                // Use <= rather than < so that ties go to the later (so that undoing inputs happens before the next)
+            if (c1.offset < c2.offset) {
                 return -1;
-            } else if (c1.offset > c2.offset) {
+            } else if (c1.offset >= c2.offset) {
                 return 1;
             }
 
