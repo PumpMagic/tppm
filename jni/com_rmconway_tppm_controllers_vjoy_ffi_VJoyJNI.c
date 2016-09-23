@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <stdio.h>
+#include <Windows.h>
 #include "vjoyinterface.h"
 #include "com_rmconway_tppm_controllers_vjoy_ffi_VJoyJNI.h"
 
@@ -60,7 +61,7 @@ JNIEXPORT jboolean JNICALL Java_com_rmconway_tppm_controllers_vjoy_ffi_VJoyJNI_c
  */
 JNIEXPORT jboolean JNICALL Java_com_rmconway_tppm_controllers_vjoy_ffi_VJoyJNI_releaseDevice (JNIEnv *env, jobject obj, jint vjoyDeviceID)
 {
-    return RelinquishVJD(vjoyDeviceID);
+    RelinquishVJD(vjoyDeviceID);
 }
 
 /*

@@ -2,6 +2,7 @@ package com.rmconway.tppm.controllers.vjoy;
 
 import com.rmconway.tppm.controllers.inputs.Button;
 import com.rmconway.tppm.controllers.vjoy.ffi.VJoyJNA;
+import com.rmconway.tppm.controllers.vjoy.ffi.VJoyJNI;
 
 /**
  * A VJoyButton is a button on a vJoy device.
@@ -23,7 +24,7 @@ public class VJoyButton implements Button {
 
     public void setValue(double value) {
         boolean valueBoolean = value == 0.0 ? false : true;
-        VJoyJNA.setButton(vjoyDeviceID, vjoyButtonID, valueBoolean);
+        VJoyJNI.INSTANCE.setButton(vjoyDeviceID, vjoyButtonID, valueBoolean);
         System.out.println(this.name + " -> " + String.valueOf(value) + " @ " + String.valueOf(System.nanoTime()));
     }
 }

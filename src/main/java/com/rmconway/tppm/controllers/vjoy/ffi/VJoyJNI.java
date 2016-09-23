@@ -8,6 +8,8 @@ public class VJoyJNI {
         System.loadLibrary("vjoyjni");
     }
 
+    public static VJoyJNI INSTANCE = new VJoyJNI();
+
     public native short getVJoyVersion();
     public native boolean isVJoyEnabled();
     public native int getNumButtons(int deviceID);
